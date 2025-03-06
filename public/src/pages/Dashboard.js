@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../css/Dashboard.css";
 import { useNavigate } from "react-router-dom";
-import { 
-  FaTachometerAlt, FaMoneyBillWave, FaClipboardList, FaChartBar, 
-  FaShoppingCart, FaHistory, FaSignOutAlt, FaBars 
-} from "react-icons/fa";
+import { FaTachometerAlt, FaMoneyBillWave, FaClipboardList, FaChartBar, FaShoppingCart, FaHistory, FaSignOutAlt, FaBars } from "react-icons/fa";
 import DashboardContent from "../Components/DashboardContent";
 import SetBudget from "../Components/SetBudget";
 import TrackExpenses from "../Components/TrackExpenses";
@@ -17,16 +14,6 @@ const Dashboard = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
   const navigate = useNavigate();
-
-  // Dummy Data for Expenses & Reports
-  const purchaseData = [
-    { date: "Feb 5, 2025", item: "Rice (50kg)", category: "Groceries", amount: 25000 },
-    { date: "Feb 8, 2025", item: "Cooking Oil (10L)", category: "Groceries", amount: 18000 },
-  ];
-  const salesData = [
-    { date: "Feb 5, 2025", item: "Bread", quantity: 10, amount: 10000 },
-    { date: "Feb 5, 2025", item: "Milk", quantity: 8, amount: 12000 },
-  ];
 
   useEffect(() => {
     const handleResize = () => {
@@ -71,9 +58,9 @@ const Dashboard = () => {
       case "set-budget":
         return <SetBudget />;
       case "track-expenses":
-        return <TrackExpenses purchaseData={purchaseData} />;
+        return <TrackExpenses />;
       case "reports":
-        return <Reports purchaseData={purchaseData} salesData={salesData} />;
+        return <Reports />;
       case "purchase-history":
         return <PurchaseHistory />;
       case "sales-history":
@@ -91,7 +78,8 @@ const Dashboard = () => {
         <ul>
           {menuItems.map(({ section, label, icon }) => (
             <li key={section}>
-              <button
+              <a
+                href="#"
                 onClick={() => {
                   setActiveSection(section);
                   if (isMobile) setSidebarOpen(false);
@@ -99,7 +87,7 @@ const Dashboard = () => {
                 className={activeSection === section ? "active" : ""}
               >
                 {icon} <span>{label}</span>
-              </button>
+              </a>
             </li>
           ))}
         </ul>

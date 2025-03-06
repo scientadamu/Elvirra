@@ -1,0 +1,42 @@
+/* TrackExpenses.css */
+.track-expenses {
+    padding: 20px;
+  }
+  
+  .charts {
+    margin-bottom: 20px;
+  }
+  
+  .chart {
+    margin: 20px 0;
+  }
+  
+  .expense-history table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .expense-history th,
+  .expense-history td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+  }
+  
+  .quick-actions {
+    margin-top: 20px;
+  }
+  
+  .action-btn {
+    padding: 10px 20px;
+    margin: 5px;
+    background-color: #36A2EB;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .action-btn:hover {
+    background-color: #2196F3;
+  }
+  
