@@ -122,3 +122,14 @@ button[type="submit"] {
 button[type="submit"]:hover {
   background-color: #2196F3;
 }
+.toggle-form-btn {
+  margin-bottom: 20px; /* Adds space after the button */
+}
+
+.history-container table {
+  margin-top: 20px; /* Adds space before the records */
+}
+.historyTitle{
+  margin-top: 20px ;
+  margin-bottom: 10px ;
+}

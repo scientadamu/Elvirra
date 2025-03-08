@@ -1,148 +1,154 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./History.css";
 
 const PurchaseHistory = () => {
-  // Sample purchase data
-  const [purchaseData, setPurchaseData] = useState([
-    { date: "Jan 2, 2025", item: "Bread", quantity: 10, amount: 10000 },
-    { date: "Jan 5, 2025", item: "Milk", quantity: 8, amount: 8000 },
-    { date: "Jan 10, 2025", item: "Eggs", quantity: 20, amount: 12000 },
-    { date: "Jan 15, 2025", item: "Rice", quantity: 6, amount: 24000 },
-    { date: "Jan 20, 2025", item: "Butter", quantity: 7, amount: 8400 },
-    { date: "Feb 3, 2025", item: "Salt", quantity: 25, amount: 2500 },
-    { date: "Feb 6, 2025", item: "Noodles", quantity: 18, amount: 9000 },
-    { date: "Feb 9, 2025", item: "Tomato Paste", quantity: 14, amount: 8400 },
-    { date: "Feb 12, 2025", item: "Margarine", quantity: 8, amount: 4800 },
-    { date: "Feb 15, 2025", item: "Cereal", quantity: 6, amount: 12000 },
-    { date: "Feb 20, 2025", item: "Butter", quantity: 10, amount: 12000 },
-    { date: "Feb 25, 2025", item: "Noodles", quantity: 20, amount: 10000 },
-  ]);
+  const [purchases, setPurchases] = useState([]);
+  const [filteredPurchases, setFilteredPurchases] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showForm, setShowForm] = useState(false); // Toggle form visibility
+  const [showFilterForm, setShowFilterForm] = useState(false); // Toggle filter form visibility
+  const [newPurchase, setNewPurchase] = useState({ date: "", item: "", quantity: "", amount: "" });
+  const [filter, setFilter] = useState({ startDate: "", endDate: "" });
 
-  const [selectedMonth, setSelectedMonth] = useState("All");
-  const [newPurchase, setNewPurchase] = useState({
-    date: "",
-    item: "",
-    quantity: "",
-    amount: "",
-  });
+  useEffect(() => {
+    fetch("/recordData.json")
+      .then((response) => {
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("✅ Full fetched data:", data);
+        if (data && Array.isArray(data.purchases)) {
+          setPurchases(data.purchases);
+          setFilteredPurchases(data.purchases); // Set filtered purchases to all purchases initially
+        } else {
+          console.error("❌ Data structure is incorrect:", data);
+          setError("Data format is incorrect");
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("❌ Error loading purchase data:", err);
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
 
-  // Function to handle new purchase form submission
+  // Handle form input change
+  const handleInputChange = (e) => {
+    setNewPurchase({ ...newPurchase, [e.target.name]: e.target.value });
+  };
+
+  // Handle form submission
   const handleAddPurchase = (e) => {
     e.preventDefault();
-    const { date, item, quantity, amount } = newPurchase;
 
-    if (date && item && quantity && amount) {
-      const newPurchaseRecord = {
-        date,
-        item,
-        quantity: Number(quantity),
-        amount: Number(amount),
-      };
-      setPurchaseData((prevData) => [...prevData, newPurchaseRecord]);
-      setNewPurchase({ date: "", item: "", quantity: "", amount: "" });
+    if (!newPurchase.date || !newPurchase.item || !newPurchase.quantity || !newPurchase.amount) {
+      alert("Please fill all fields.");
+      return;
+    }
+
+    const updatedPurchases = [
+      ...purchases,
+      { ...newPurchase, quantity: Number(newPurchase.quantity), amount: Number(newPurchase.amount) },
+    ];
+
+    setPurchases(updatedPurchases); // Update UI state
+    setNewPurchase({ date: "", item: "", quantity: "", amount: "" }); // Reset form
+    setShowForm(false); // Hide form after submission
+
+    // Simulate writing to a JSON file (since frontend can't update JSON directly)
+    console.log("📝 Updated Purchases:", updatedPurchases);
+    alert("New purchase added! (Note: JSON file isn't actually updated in frontend-only apps)");
+  };
+
+  // Handle filter input change
+  const handleFilterChange = (e) => {
+    setFilter({ ...filter, [e.target.name]: e.target.value });
+  };
+
+  // Filter purchase records based on date range
+  const handleFilterPurchases = () => {
+    if (filter.startDate && filter.endDate) {
+      const filtered = purchases.filter((purchase) => {
+        const purchaseDate = new Date(purchase.date);
+        return purchaseDate >= new Date(filter.startDate) && purchaseDate <= new Date(filter.endDate);
+      });
+      setFilteredPurchases(filtered);
+    } else {
+      alert("Please select both start and end dates.");
     }
   };
 
-  // Function to handle input changes in the form
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewPurchase((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+  // Calculate total amount for the displayed records
+  const calculateTotal = (purchasesToCalculate) => {
+    return purchasesToCalculate.reduce((total, purchase) => total + purchase.amount, 0);
   };
-
-  // Function to filter purchases by month
-  const filterByMonth = (data, month) => {
-    if (month === "All") return data;
-    return data.filter((item) => new Date(item.date).getMonth() === month);
-  };
-
-  // Generate months (0 = January, 11 = December)
-  const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
-
-  // Convert month name to number (0-11)
-  const selectedMonthIndex = selectedMonth === "All" ? "All" : months.indexOf(selectedMonth);
-
-  // Ensure purchaseData is an array
-  const safePurchaseData = Array.isArray(purchaseData) ? purchaseData : [];
-  const filteredPurchases = filterByMonth(safePurchaseData, selectedMonthIndex);
-
-  // Calculate total purchase amount (2/3 of the sales)
-  const totalPurchaseAmount = filteredPurchases.reduce((total, purchase) => total + (purchase.amount * 2) / 3, 0);
 
   return (
     <div className="history-container">
-      <h2>Add Purchase Record</h2>
+      {/* Purchase Header Text before Add Purchase Record button */}
+      <h2>Welcome to Purchase History</h2>
 
-      {/* Form to Add New Purchase Record */}
-      <form className="add-purchase-form" onSubmit={handleAddPurchase}>
-        <div className="form-field">
-          <label>Date:</label>
-          <input
-            type="date"
-            name="date"
-            value={newPurchase.date}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        <div className="form-field">
-          <label>Item:</label>
-          <input
-            type="text"
-            name="item"
-            value={newPurchase.item}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        <div className="form-field">
-          <label>Quantity:</label>
-          <input
-            type="number"
-            name="quantity"
-            value={newPurchase.quantity}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        <div className="form-field">
-          <label>Amount (₦):</label>
-          <input
-            type="number"
-            name="amount"
-            value={newPurchase.amount}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        <button type="submit">Add Purchase</button>
-      </form>
+      {/* Add Purchase Record Button */}
+      <button onClick={() => setShowForm(!showForm)} className="toggle-form-btn">
+        {showForm ? "Cancel" : "Add Purchase Record"}
+      </button>
 
-      {/* Month Selection Buttons */}
-      <h2>Purchase History</h2>
-      <div className="month-buttons">
-        <button className={selectedMonth === "All" ? "active" : ""} onClick={() => setSelectedMonth("All")}>
-          All Months
-        </button>
-        {months.map((month, index) => (
-          <button key={index} className={selectedMonth === month ? "active" : ""} onClick={() => setSelectedMonth(month)}>
-            {month}
-          </button>
-        ))}
-      </div>
+      {/* Purchase Form (Shown if Button is Clicked) */}
+      {showForm && (
+        <form className="add-purchase-form" onSubmit={handleAddPurchase}>
+          <div className="form-field">
+            <label>Date:</label>
+            <input type="date" name="date" value={newPurchase.date} onChange={handleInputChange} required />
+          </div>
+          <div className="form-field">
+            <label>Item:</label>
+            <input type="text" name="item" value={newPurchase.item} onChange={handleInputChange} required />
+          </div>
+          <div className="form-field">
+            <label>Quantity:</label>
+            <input type="number" name="quantity" value={newPurchase.quantity} onChange={handleInputChange} required />
+          </div>
+          <div className="form-field">
+            <label>Amount (₦):</label>
+            <input type="number" name="amount" value={newPurchase.amount} onChange={handleInputChange} required />
+          </div>
+          <button type="submit">Add Purchase</button>
+        </form>
+      )}
 
-      {/* Display the Selected Month Above the Table */}
-      <div className="selected-month">
-        <h3>Purchases for {selectedMonth === "All" ? "All Months" : selectedMonth}</h3>
-      </div>
+      {/* Filter Purchases Button */}
+      <button onClick={() => setShowFilterForm(!showFilterForm)} className="toggle-filter-btn">
+        {showFilterForm ? "Cancel Filter" : "Filter Purchase Records"}
+      </button>
 
-      {/* Show Purchases Only If Data Exists */}
-      {filteredPurchases.length > 0 ? (
+      {/* Filter Form (Shown if Button is Clicked) */}
+      {showFilterForm && (
+        <form className="filter-form">
+          <div className="form-field">
+            <label>Start Date:</label>
+            <input type="date" name="startDate" value={filter.startDate} onChange={handleFilterChange} required />
+          </div>
+          <div className="form-field">
+            <label>End Date:</label>
+            <input type="date" name="endDate" value={filter.endDate} onChange={handleFilterChange} required />
+          </div>
+          <button type="button" onClick={handleFilterPurchases}>Apply Filter</button>
+        </form>
+      )}
+
+      {/* Purchase Header Text after Filter Button and before the List */}
+      <h2 className="historyTitle">Purchase History</h2>
+
+      {/* Debugging Information */}
+      {error && <p style={{ color: "red" }}>Error: {error}</p>}
+      {loading && <p>Loading purchase records...</p>}
+      {!loading && !error && purchases.length === 0 && <p>No purchase records available.</p>}
+
+      {/* Display Purchase Records */}
+      {filteredPurchases.length > 0 && (
         <>
           <table>
             <thead>
@@ -164,14 +170,11 @@ const PurchaseHistory = () => {
               ))}
             </tbody>
           </table>
-
-          {/* Display the Total Purchase Amount at the End of the Table */}
-          <div className="total-row">
-            <strong>Total Purchase: ₦{totalPurchaseAmount.toLocaleString()}</strong>
+          {/* Show Total */}
+          <div className="total">
+            <h3>Total: ₦{calculateTotal(filteredPurchases).toLocaleString()}</h3>
           </div>
         </>
-      ) : (
-        <p className="no-data">No purchase records available for {selectedMonth}.</p>
       )}
     </div>
   );

@@ -1,148 +1,155 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./History.css";
 
 const SalesHistory = () => {
-  // Sample sales data
-  const [salesData, setSalesData] = useState([
-    { date: "Jan 2, 2025", item: "Laptop", quantity: 5, amount: 50000 },
-    { date: "Jan 5, 2025", item: "Phone", quantity: 8, amount: 80000 },
-    { date: "Jan 10, 2025", item: "Headphones", quantity: 15, amount: 45000 },
-    { date: "Jan 15, 2025", item: "Mouse", quantity: 12, amount: 24000 },
-    { date: "Jan 20, 2025", item: "Keyboard", quantity: 7, amount: 21000 },
-    { date: "Feb 3, 2025", item: "Monitor", quantity: 4, amount: 40000 },
-    { date: "Feb 6, 2025", item: "Router", quantity: 10, amount: 30000 },
-    { date: "Feb 9, 2025", item: "Charger", quantity: 18, amount: 18000 },
-    { date: "Feb 12, 2025", item: "Printer", quantity: 6, amount: 12000 },
-    { date: "Feb 15, 2025", item: "Scanner", quantity: 5, amount: 25000 },
-    { date: "Feb 20, 2025", item: "Tablet", quantity: 8, amount: 64000 },
-    { date: "Feb 25, 2025", item: "Speaker", quantity: 7, amount: 21000 },
-  ]);
+  const [sales, setSales] = useState([]);
+  const [filteredSales, setFilteredSales] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showForm, setShowForm] = useState(false); // Toggle form visibility
+  const [showFilterForm, setShowFilterForm] = useState(false); // Toggle filter form visibility
+  const [newSale, setNewSale] = useState({ date: "", item: "", quantity: "", amount: "" });
+  const [filter, setFilter] = useState({ startDate: "", endDate: "" });
 
-  const [selectedMonth, setSelectedMonth] = useState("All");
-  const [newSale, setNewSale] = useState({
-    date: "",
-    item: "",
-    quantity: "",
-    amount: "",
-  });
+  useEffect(() => {
+    fetch("/recordData.json")
+      .then((response) => {
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("✅ Full fetched data:", data);
+        if (data && Array.isArray(data.sales)) {
+          setSales(data.sales);
+          setFilteredSales(data.sales); // Set filtered sales to all sales initially
+        } else {
+          console.error("❌ Data structure is incorrect:", data);
+          setError("Data format is incorrect");
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("❌ Error loading sales data:", err);
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
 
-  // Function to handle new sale form submission
+  // Handle form input change
+  const handleInputChange = (e) => {
+    setNewSale({ ...newSale, [e.target.name]: e.target.value });
+  };
+
+  // Handle form submission
   const handleAddSale = (e) => {
     e.preventDefault();
-    const { date, item, quantity, amount } = newSale;
 
-    if (date && item && quantity && amount) {
-      const newSaleRecord = {
-        date,
-        item,
-        quantity: Number(quantity),
-        amount: Number(amount),
-      };
-      setSalesData((prevData) => [...prevData, newSaleRecord]);
-      setNewSale({ date: "", item: "", quantity: "", amount: "" });
+    if (!newSale.date || !newSale.item || !newSale.quantity || !newSale.amount) {
+      alert("Please fill all fields.");
+      return;
+    }
+
+    const updatedSales = [...sales, { 
+      ...newSale, 
+      quantity: Number(newSale.quantity), 
+      amount: Number(newSale.amount) 
+    }];
+
+    setSales(updatedSales); // Update UI state
+    setNewSale({ date: "", item: "", quantity: "", amount: "" }); // Reset form
+    setShowForm(false); // Hide form after submission
+
+    // Simulate writing to a JSON file (since frontend can't update JSON directly)
+    console.log("📝 Updated Sales:", updatedSales);
+    alert("New sale added! (Note: JSON file isn't actually updated in frontend-only apps)");
+  };
+
+  // Handle filter input change
+  const handleFilterChange = (e) => {
+    setFilter({ ...filter, [e.target.name]: e.target.value });
+  };
+
+  // Filter sales records based on date range
+  const handleFilterSales = () => {
+    if (filter.startDate && filter.endDate) {
+      const filtered = sales.filter((sale) => {
+        const saleDate = new Date(sale.date);
+        return saleDate >= new Date(filter.startDate) && saleDate <= new Date(filter.endDate);
+      });
+      setFilteredSales(filtered);
+    } else {
+      alert("Please select both start and end dates.");
     }
   };
 
-  // Function to handle input changes in the form
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewSale((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+  // Calculate total amount for the displayed records
+  const calculateTotal = (salesToCalculate) => {
+    return salesToCalculate.reduce((total, sale) => total + sale.amount, 0);
   };
-
-  // Function to filter sales by month
-  const filterByMonth = (data, month) => {
-    if (month === "All") return data;
-    return data.filter((item) => new Date(item.date).getMonth() === month);
-  };
-
-  // Generate months (0 = January, 11 = December)
-  const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
-
-  // Convert month name to number (0-11)
-  const selectedMonthIndex = selectedMonth === "All" ? "All" : months.indexOf(selectedMonth);
-
-  // Ensure salesData is an array
-  const safeSalesData = Array.isArray(salesData) ? salesData : [];
-  const filteredSales = filterByMonth(safeSalesData, selectedMonthIndex);
-
-  // Calculate total sales amount
-  const totalSalesAmount = filteredSales.reduce((total, sale) => total + sale.amount, 0);
 
   return (
     <div className="history-container">
-      <h2> Add Sales Record</h2>
+      {/* Sales Header Text before Add Sales Record button */}
+      <h2>Welcome to Sales</h2>
 
-      {/* Form to Add New Sale Record */}
-      <form className="add-sale-form" onSubmit={handleAddSale}>
-        <div className="form-field">
-          <label>Date:</label>
-          <input
-            type="date"
-            name="date"
-            value={newSale.date}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        <div className="form-field">
-          <label>Item:</label>
-          <input
-            type="text"
-            name="item"
-            value={newSale.item}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        <div className="form-field">
-          <label>Quantity:</label>
-          <input
-            type="number"
-            name="quantity"
-            value={newSale.quantity}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        <div className="form-field">
-          <label>Amount (₦):</label>
-          <input
-            type="number"
-            name="amount"
-            value={newSale.amount}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        <button type="submit">Add Sale</button>
-      </form>
+      {/* Add Sales Record Button */}
+      <button onClick={() => setShowForm(!showForm)} className="toggle-form-btn">
+        {showForm ? "Cancel" : "Add Sales Record"}
+      </button>
 
-      {/* Month Selection Buttons */}
-      <h2>Sales History</h2>
-      <div className="month-buttons">
-        <button className={selectedMonth === "All" ? "active" : ""} onClick={() => setSelectedMonth("All")}>
-          All Months
-        </button>
-        {months.map((month, index) => (
-          <button key={index} className={selectedMonth === month ? "active" : ""} onClick={() => setSelectedMonth(month)}>
-            {month}
-          </button>
-        ))}
-      </div>
+      {/* Sales Form (Shown if Button is Clicked) */}
+      {showForm && (
+        <form className="add-sales-form" onSubmit={handleAddSale}>
+          <div className="form-field">
+            <label>Date:</label>
+            <input type="date" name="date" value={newSale.date} onChange={handleInputChange} required />
+          </div>
+          <div className="form-field">
+            <label>Item:</label>
+            <input type="text" name="item" value={newSale.item} onChange={handleInputChange} required />
+          </div>
+          <div className="form-field">
+            <label>Quantity:</label>
+            <input type="number" name="quantity" value={newSale.quantity} onChange={handleInputChange} required />
+          </div>
+          <div className="form-field">
+            <label>Amount (₦):</label>
+            <input type="number" name="amount" value={newSale.amount} onChange={handleInputChange} required />
+          </div>
+          <button type="submit">Add Sale</button>
+        </form>
+      )}
 
-      {/* Display the Selected Month Above the Table */}
-      <div className="selected-month">
-        <h3>Sales for {selectedMonth === "All" ? "All Months" : selectedMonth}</h3>
-      </div>
+      {/* Filter Sales Button */}
+      <button onClick={() => setShowFilterForm(!showFilterForm)} className="toggle-filter-btn">
+        {showFilterForm ? "Cancel Filter" : "Filter Sales Records"}
+      </button>
 
-      {/* Show Sales Only If Data Exists */}
-      {filteredSales.length > 0 ? (
+      {/* Filter Form (Shown if Button is Clicked) */}
+      {showFilterForm && (
+        <form className="filter-form">
+          <div className="form-field">
+            <label>Start Date:</label>
+            <input type="date" name="startDate" value={filter.startDate} onChange={handleFilterChange} required />
+          </div>
+          <div className="form-field">
+            <label>End Date:</label>
+            <input type="date" name="endDate" value={filter.endDate} onChange={handleFilterChange} required />
+          </div>
+          <button type="button" onClick={handleFilterSales}>Apply Filter</button>
+        </form>
+      )}
+
+      {/* Sales Header Text after Filter Button and before the List */}
+      <h2 className="historyTitle">Sales History </h2>
+
+      {/* Debugging Information */}
+      {error && <p style={{ color: "red" }}>Error: {error}</p>}
+      {loading && <p>Loading sales records...</p>}
+      {!loading && !error && sales.length === 0 && <p>No sales records available.</p>}
+
+      {/* Display Sales Records */}
+      {filteredSales.length > 0 && (
         <>
           <table>
             <thead>
@@ -164,14 +171,11 @@ const SalesHistory = () => {
               ))}
             </tbody>
           </table>
-
-          {/* Display the Total Sales Amount at the End of the Table */}
-          <div className="total-row">
-            <strong>Total Sales: ₦{totalSalesAmount.toLocaleString()}</strong>
+          {/* Show Total */}
+          <div className="total">
+            <h3>Total: ₦{calculateTotal(filteredSales).toLocaleString()}</h3>
           </div>
         </>
-      ) : (
-        <p className="no-data">No sales records available for {selectedMonth}.</p>
       )}
     </div>
   );
