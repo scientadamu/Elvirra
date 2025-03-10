@@ -12,16 +12,28 @@ const PurchaseHistory = () => {
   const [filter, setFilter] = useState({ startDate: "", endDate: "" });
 
   useEffect(() => {
-    fetch("/recordData.json")
+    fetch("/elviralData.json")
       .then((response) => {
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         return response.json();
       })
       .then((data) => {
-        console.log("✅ Full fetched data:", data);
-        if (data && Array.isArray(data.purchases)) {
-          setPurchases(data.purchases);
-          setFilteredPurchases(data.purchases); // Set filtered purchases to all purchases initially
+        console.log("✅ Fetched data:", data); // Check data structure
+        if (data && Array.isArray(data.transactions)) {
+          // Filter for only purchase transactions
+          const purchaseRecords = data.transactions.filter((transaction) => transaction.type === "purchase");
+
+          // Process purchase records to match the structure of previous sales records
+          const purchases = purchaseRecords.map((purchase) => ({
+            date: purchase.date,
+            item: purchase.item,
+            quantity: purchase.quantity,
+            amount: purchase.amount,
+            unitPrice: purchase.unitPrice, // Add unit price as in sales records
+          }));
+
+          setPurchases(purchases); // Set purchase records
+          setFilteredPurchases(purchases); // Initially set filtered purchases to all purchases
         } else {
           console.error("❌ Data structure is incorrect:", data);
           setError("Data format is incorrect");
@@ -165,14 +177,13 @@ const PurchaseHistory = () => {
                   <td>{purchase.date}</td>
                   <td>{purchase.item}</td>
                   <td>{purchase.quantity}</td>
-                  <td>₦{purchase.amount.toLocaleString()}</td>
+                  <td>{purchase.amount}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-          {/* Show Total */}
           <div className="total">
-            <h3>Total: ₦{calculateTotal(filteredPurchases).toLocaleString()}</h3>
+            <p>Total Purchase Amount: ₦{calculateTotal(filteredPurchases).toLocaleString()}</p>
           </div>
         </>
       )}

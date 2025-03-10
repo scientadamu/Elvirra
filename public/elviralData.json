@@ -1,0 +1,807 @@
+{
+  "transactions": [
+    {
+      "date": "2025-01-02",
+      "type": "sale",
+      "item": "Rice (mudus)",
+      "quantity": 4,
+      "unitPrice": 5500,
+      "amount": 22000
+    },
+    {
+      "date": "2025-01-03",
+      "type": "sale",
+      "item": "Sugar (mudus)",
+      "quantity": 6,
+      "unitPrice": 5200,
+      "amount": 31200
+    },
+    {
+      "date": "2025-01-04",
+      "type": "sale",
+      "item": "Oil (litres)",
+      "quantity": 5,
+      "unitPrice": 5200,
+      "amount": 26000
+    },
+    {
+      "date": "2025-01-06",
+      "type": "sale",
+      "item": "Flour (mudus)",
+      "quantity": 6,
+      "unitPrice": 5300,
+      "amount": 31800
+    },
+    {
+      "date": "2025-01-07",
+      "type": "sale",
+      "item": "Milk (row)",
+      "quantity": 4,
+      "unitPrice": 5100,
+      "amount": 20400
+    },
+    {
+      "date": "2025-01-09",
+      "type": "sale",
+      "item": "Rice (mudus)",
+      "quantity": 5,
+      "unitPrice": 5500,
+      "amount": 27500
+    },
+    {
+      "date": "2025-01-10",
+      "type": "sale",
+      "item": "Sugar (mudus)",
+      "quantity": 6,
+      "unitPrice": 5200,
+      "amount": 31200
+    },
+    {
+      "date": "2025-01-11",
+      "type": "sale",
+      "item": "Oil (litres)",
+      "quantity": 5,
+      "unitPrice": 5200,
+      "amount": 26000
+    },
+    {
+      "date": "2025-01-13",
+      "type": "sale",
+      "item": "Flour (mudus)",
+      "quantity": 6,
+      "unitPrice": 5300,
+      "amount": 31800
+    },
+    {
+      "date": "2025-01-14",
+      "type": "sale",
+      "item": "Milk (row)",
+      "quantity": 4,
+      "unitPrice": 5100,
+      "amount": 20400
+    },
+    {
+      "date": "2025-01-16",
+      "type": "sale",
+      "item": "Rice (mudus)",
+      "quantity": 5,
+      "unitPrice": 5500,
+      "amount": 27500
+    },
+    {
+      "date": "2025-01-17",
+      "type": "sale",
+      "item": "Sugar (mudus)",
+      "quantity": 6,
+      "unitPrice": 5200,
+      "amount": 31200
+    },
+    {
+      "date": "2025-01-18",
+      "type": "sale",
+      "item": "Oil (litres)",
+      "quantity": 5,
+      "unitPrice": 5200,
+      "amount": 26000
+    },
+    {
+      "date": "2025-01-20",
+      "type": "sale",
+      "item": "Flour (mudus)",
+      "quantity": 6,
+      "unitPrice": 5300,
+      "amount": 31800
+    },
+    {
+      "date": "2025-01-21",
+      "type": "sale",
+      "item": "Milk (row)",
+      "quantity": 4,
+      "unitPrice": 5100,
+      "amount": 20400
+    },
+    {
+      "date": "2025-01-23",
+      "type": "sale",
+      "item": "Rice (mudus)",
+      "quantity": 5,
+      "unitPrice": 5500,
+      "amount": 27500
+    },
+    {
+      "date": "2025-01-24",
+      "type": "sale",
+      "item": "Sugar (mudus)",
+      "quantity": 6,
+      "unitPrice": 5200,
+      "amount": 31200
+    },
+    {
+      "date": "2025-01-25",
+      "type": "sale",
+      "item": "Oil (litres)",
+      "quantity": 5,
+      "unitPrice": 5200,
+      "amount": 26000
+    },
+    {
+      "date": "2025-01-27",
+      "type": "sale",
+      "item": "Flour (mudus)",
+      "quantity": 6,
+      "unitPrice": 5300,
+      "amount": 31800
+    },
+    {
+      "date": "2025-01-28",
+      "type": "sale",
+      "item": "Milk (row)",
+      "quantity": 4,
+      "unitPrice": 5100,
+      "amount": 20400
+    },
+    {
+      "date": "2025-01-01",
+      "type": "purchase",
+      "item": "Rice (mudus)",
+      "quantity": 10,
+      "unitPrice": 5000,
+      "amount": 50000
+    },
+    {
+      "date": "2025-01-05",
+      "type": "purchase",
+      "item": "Sugar (mudus)",
+      "quantity": 8,
+      "unitPrice": 5100,
+      "amount": 40800
+    },
+    {
+      "date": "2025-01-08",
+      "type": "purchase",
+      "item": "Oil (litres)",
+      "quantity": 10,
+      "unitPrice": 5100,
+      "amount": 51000
+    },
+    {
+      "date": "2025-01-15",
+      "type": "purchase",
+      "item": "Flour (mudus)",
+      "quantity": 12,
+      "unitPrice": 5200,
+      "amount": 62400
+    },
+    {
+      "date": "2025-01-20",
+      "type": "purchase",
+      "item": "Milk (row)",
+      "quantity": 10,
+      "unitPrice": 5000,
+      "amount": 50000
+    },
+    {
+      "date": "2025-01-22",
+      "type": "purchase",
+      "item": "Rice (mudus)",
+      "quantity": 12,
+      "unitPrice": 5100,
+      "amount": 61200
+    },
+    {
+      "date": "2025-01-01",
+      "type": "expenditure",
+      "category": "Salaries",
+      "amount": 90000
+    },
+    {
+      "date": "2025-01-02",
+      "type": "expenditure",
+      "category": "Rent",
+      "amount": 22000
+    },
+    {
+      "date": "2025-01-05",
+      "type": "expenditure",
+      "category": "Federal Tax",
+      "amount": 20000
+    },
+    {
+      "date": "2025-01-06",
+      "type": "expenditure",
+      "category": "State Tax",
+      "amount": 15000
+    },
+    {
+      "date": "2025-01-07",
+      "type": "expenditure",
+      "category": "LGA Tax",
+      "amount": 5000
+    },
+    {
+      "date": "2025-01-10",
+      "type": "expenditure",
+      "category": "Light Bill",
+      "amount": 5000
+    },
+    {
+      "date": "2025-01-12",
+      "type": "expenditure",
+      "category": "Water Bill",
+      "amount": 3000
+    },
+    {
+      "date": "2025-01-15",
+      "type": "expenditure",
+      "category": "Sanitation/Waste Disposal",
+      "amount": 2000
+    },
+    {
+      "date": "2025-01-20",
+      "type": "expenditure",
+      "category": "Other Expenses",
+      "amount": 8000
+    },
+        {
+          "date": "2025-02-01",
+          "type": "sale",
+          "item": "Rice (mudus)",
+          "quantity": 5,
+          "unitPrice": 5500,
+          "amount": 27500
+        },
+        {
+          "date": "2025-02-01",
+          "type": "purchase",
+          "item": "Rice (mudus)",
+          "quantity": 10,
+          "unitPrice": 5000,
+          "amount": 50000
+        },
+        {
+          "date": "2025-02-02",
+          "type": "sale",
+          "item": "Sugar (mudus)",
+          "quantity": 7,
+          "unitPrice": 5200,
+          "amount": 36400
+        },
+        {
+          "date": "2025-02-02",
+          "type": "purchase",
+          "item": "Sugar (mudus)",
+          "quantity": 8,
+          "unitPrice": 4900,
+          "amount": 39200
+        },
+        {
+          "date": "2025-02-03",
+          "type": "sale",
+          "item": "Oil (litres)",
+          "quantity": 6,
+          "unitPrice": 5200,
+          "amount": 31200
+        },
+        {
+          "date": "2025-02-03",
+          "type": "purchase",
+          "item": "Oil (litres)",
+          "quantity": 8,
+          "unitPrice": 4800,
+          "amount": 38400
+        },
+        {
+          "date": "2025-02-04",
+          "type": "expenditure",
+          "item": "Rent",
+          "amount": 10000
+        },
+        {
+          "date": "2025-02-05",
+          "type": "sale",
+          "item": "Flour (mudus)",
+          "quantity": 7,
+          "unitPrice": 5300,
+          "amount": 37100
+        },
+        {
+          "date": "2025-02-06",
+          "type": "sale",
+          "item": "Milk (row)",
+          "quantity": 5,
+          "unitPrice": 5100,
+          "amount": 25500
+        },
+        {
+          "date": "2025-02-06",
+          "type": "purchase",
+          "item": "Flour (mudus)",
+          "quantity": 6,
+          "unitPrice": 5100,
+          "amount": 30600
+        },
+        {
+          "date": "2025-02-07",
+          "type": "sale",
+          "item": "Rice (mudus)",
+          "quantity": 4,
+          "unitPrice": 5500,
+          "amount": 22000
+        },
+        {
+          "date": "2025-02-07",
+          "type": "expenditure",
+          "item": "Utilities",
+          "amount": 3000
+        },
+        {
+          "date": "2025-02-08",
+          "type": "sale",
+          "item": "Sugar (mudus)",
+          "quantity": 7,
+          "unitPrice": 5200,
+          "amount": 36400
+        },
+        {
+          "date": "2025-02-09",
+          "type": "sale",
+          "item": "Oil (litres)",
+          "quantity": 6,
+          "unitPrice": 5200,
+          "amount": 31200
+        },
+        {
+          "date": "2025-02-09",
+          "type": "purchase",
+          "item": "Milk (row)",
+          "quantity": 10,
+          "unitPrice": 5000,
+          "amount": 50000
+        },
+        {
+          "date": "2025-02-10",
+          "type": "sale",
+          "item": "Flour (mudus)",
+          "quantity": 7,
+          "unitPrice": 5300,
+          "amount": 37100
+        },
+        {
+          "date": "2025-02-11",
+          "type": "sale",
+          "item": "Milk (row)",
+          "quantity": 5,
+          "unitPrice": 5100,
+          "amount": 25500
+        },
+        {
+          "date": "2025-02-12",
+          "type": "purchase",
+          "item": "Sugar (mudus)",
+          "quantity": 8,
+          "unitPrice": 4900,
+          "amount": 39200
+        },
+        {
+          "date": "2025-02-13",
+          "type": "sale",
+          "item": "Rice (mudus)",
+          "quantity": 5,
+          "unitPrice": 5500,
+          "amount": 27500
+        },
+        {
+          "date": "2025-02-14",
+          "type": "sale",
+          "item": "Sugar (mudus)",
+          "quantity": 7,
+          "unitPrice": 5200,
+          "amount": 36400
+        },
+        {
+          "date": "2025-02-14",
+          "type": "purchase",
+          "item": "Rice (mudus)",
+          "quantity": 5,
+          "unitPrice": 5100,
+          "amount": 25500
+        },
+        {
+          "date": "2025-02-15",
+          "type": "sale",
+          "item": "Oil (litres)",
+          "quantity": 6,
+          "unitPrice": 5200,
+          "amount": 31200
+        },
+        {
+          "date": "2025-02-16",
+          "type": "expenditure",
+          "item": "Miscellaneous expenses",
+          "amount": 2500
+        },
+        {
+          "date": "2025-02-17",
+          "type": "sale",
+          "item": "Flour (mudus)",
+          "quantity": 7,
+          "unitPrice": 5300,
+          "amount": 37100
+        },
+        {
+          "date": "2025-02-18",
+          "type": "sale",
+          "item": "Milk (row)",
+          "quantity": 5,
+          "unitPrice": 5100,
+          "amount": 25500
+        },
+        {
+          "date": "2025-02-19",
+          "type": "sale",
+          "item": "Rice (mudus)",
+          "quantity": 4,
+          "unitPrice": 5500,
+          "amount": 22000
+        },
+        {
+          "date": "2025-02-20",
+          "type": "sale",
+          "item": "Sugar (mudus)",
+          "quantity": 7,
+          "unitPrice": 5200,
+          "amount": 36400
+        },
+        {
+          "date": "2025-02-20",
+          "type": "purchase",
+          "item": "Oil (litres)",
+          "quantity": 6,
+          "unitPrice": 5000,
+          "amount": 30000
+        },
+        {
+          "date": "2025-02-21",
+          "type": "sale",
+          "item": "Oil (litres)",
+          "quantity": 6,
+          "unitPrice": 5200,
+          "amount": 31200
+        },
+        {
+          "date": "2025-02-21",
+          "type": "purchase",
+          "item": "Flour (mudus)",
+          "quantity": 6,
+          "unitPrice": 5100,
+          "amount": 30600
+        },
+        {
+          "date": "2025-02-28",
+          "type": "expenditure",
+          "category": "Salaries",
+          "amount": 90000
+        },
+        {
+          "date": "2025-02-28",
+          "type": "expenditure",
+          "category": "Rent",
+          "amount": 22000
+        },
+        {
+          "date": "2025-02-28",
+          "type": "expenditure",
+          "category": "Federal Tax",
+          "amount": 20000
+        },
+        {
+          "date": "2025-02-28",
+          "type": "expenditure",
+          "category": "State Tax",
+          "amount": 15000
+        },
+        {
+          "date": "2025-02-28",
+          "type": "expenditure",
+          "category": "LGA Tax",
+          "amount": 5000
+        },
+        {
+          "date": "2025-02-28",
+          "type": "expenditure",
+          "category": "Light Bill",
+          "amount": 5000
+        },
+        {
+          "date": "2025-02-28",
+          "type": "expenditure",
+          "category": "Water Bill",
+          "amount": 3000
+        },
+        {
+          "date": "2025-02-28",
+          "type": "expenditure",
+          "category": "Sanitation/Waste Disposal",
+          "amount": 2000
+        },
+        {
+          "date": "2025-02-7",
+          "type": "expenditure",
+          "category": "Other Expenses",
+          "amount": 8000
+        },
+        
+        {
+          "date": "2025-02-23",
+          "type": "sale",
+          "item": "Milk (row)",
+          "quantity": 5,
+          "unitPrice": 5100,
+          "amount": 25500
+        },
+            {
+              "date": "2025-03-01",
+              "type": "sale",
+              "item": "Rice (mudus)",
+              "quantity": 5,
+              "unitPrice": 5500,
+              "amount": 27500
+            },
+            {
+              "date": "2025-03-01",
+              "type": "purchase",
+              "item": "Rice (mudus)",
+              "quantity": 5,
+              "unitPrice": 5100,
+              "amount": 25500
+            },
+            {
+              "date": "2025-03-02",
+              "type": "sale",
+              "item": "Sugar (mudus)",
+              "quantity": 7,
+              "unitPrice": 5200,
+              "amount": 36400
+            },
+            {
+              "date": "2025-03-02",
+              "type": "purchase",
+              "item": "Sugar (mudus)",
+              "quantity": 8,
+              "unitPrice": 4900,
+              "amount": 39200
+            },
+            {
+              "date": "2025-03-03",
+              "type": "sale",
+              "item": "Oil (litres)",
+              "quantity": 6,
+              "unitPrice": 5200,
+              "amount": 31200
+            },
+            {
+              "date": "2025-03-03",
+              "type": "purchase",
+              "item": "Oil (litres)",
+              "quantity": 8,
+              "unitPrice": 4800,
+              "amount": 38400
+            },
+            {
+              "date": "2025-03-04",
+              "type": "expenditure",
+              "category": "Salaries",
+              "amount": 90000
+            },
+            {
+              "date": "2025-03-05",
+              "type": "sale",
+              "item": "Flour (mudus)",
+              "quantity": 7,
+              "unitPrice": 5300,
+              "amount": 37100
+            },
+            {
+              "date": "2025-03-06",
+              "type": "sale",
+              "item": "Milk (row)",
+              "quantity": 5,
+              "unitPrice": 5100,
+              "amount": 25500
+            },
+            {
+              "date": "2025-03-06",
+              "type": "purchase",
+              "item": "Flour (mudus)",
+              "quantity": 6,
+              "unitPrice": 5100,
+              "amount": 30600
+            },
+            {
+              "date": "2025-03-07",
+              "type": "sale",
+              "item": "Rice (mudus)",
+              "quantity": 5,
+              "unitPrice": 5500,
+              "amount": 27500
+            },
+           
+            {
+              "date": "2025-03-12",
+              "type": "sale",
+              "item": "Flour (mudus)",
+              "quantity": 8,
+              "unitPrice": 5300,
+              "amount": 42400
+            },
+            {
+              "date": "2025-03-13",
+              "type": "purchase",
+              "item": "Flour (mudus)",
+              "quantity": 8,
+              "unitPrice": 5100,
+              "amount": 40800
+            },
+            {
+              "date": "2025-03-17",
+              "type": "purchase",
+              "item": "Sugar (mudus)",
+              "quantity": 9,
+              "unitPrice": 4900,
+              "amount": 44100
+            },
+            {
+              "date": "2025-03-18",
+              "type": "sale",
+              "item": "Oil (litres)",
+              "quantity": 8,
+              "unitPrice": 5300,
+              "amount": 42400
+            },
+            {
+              "date": "2025-03-19",
+              "type": "purchase",
+              "item": "Oil (litres)",
+              "quantity": 9,
+              "unitPrice": 4800,
+              "amount": 43200
+            },
+            {
+              "date": "2025-03-20",
+              "type": "sale",
+              "item": "Flour (mudus)",
+              "quantity": 9,
+              "unitPrice": 5300,
+              "amount": 47700
+            },
+            {
+              "date": "2025-03-21",
+              "type": "purchase",
+              "item": "Flour (mudus)",
+              "quantity": 9,
+              "unitPrice": 5100,
+              "amount": 45900
+            },
+            {
+              "date": "2025-03-22",
+              "type": "sale",
+              "item": "Rice (mudus)",
+              "quantity": 7,
+              "unitPrice": 5500,
+              "amount": 38500
+            },
+            {
+              "date": "2025-03-23",
+              "type": "purchase",
+              "item": "Rice (mudus)",
+              "quantity": 7,
+              "unitPrice": 5100,
+              "amount": 35700
+            },
+            {
+              "date": "2025-03-24",
+              "type": "sale",
+              "item": "Sugar (mudus)",
+              "quantity": 9,
+              "unitPrice": 5200,
+              "amount": 46800
+            },
+           
+            {
+              "date": "2025-03-26",
+              "type": "sale",
+              "item": "Oil (litres)",
+              "quantity": 9,
+              "unitPrice": 5300,
+              "amount": 47700
+            },
+          
+            {
+              "date": "2025-03-28",
+              "type": "sale",
+              "item": "Flour (mudus)",
+              "quantity": 10,
+              "unitPrice": 5300,
+              "amount": 53000
+            },
+           
+            {
+              "date": "2025-03-30",
+              "type": "sale",
+              "item": "Rice (mudus)",
+              "quantity": 8,
+              "unitPrice": 5500,
+              "amount": 44000
+            },
+           
+            {
+              "date": "2025-03-02",
+              "type": "expenditure",
+              "category": "Rent",
+              "amount": 22000
+            },
+            {
+              "date": "2025-03-05",
+              "type": "expenditure",
+              "category": "Federal Tax",
+              "amount": 20000
+            },
+            {
+              "date": "2025-03-06",
+              "type": "expenditure",
+              "category": "State Tax",
+              "amount": 15000
+            },
+            {
+              "date": "2025-03-07",
+              "type": "expenditure",
+              "category": "LGA Tax",
+              "amount": 5000
+            },
+            {
+              "date": "2025-03-10",
+              "type": "expenditure",
+              "category": "Light Bill",
+              "amount": 5000
+            },
+            {
+              "date": "2025-03-13",
+              "type": "expenditure",
+              "category": "Water Bill",
+              "amount": 3000
+            },
+            {
+              "date": "2025-03-15",
+              "type": "expenditure",
+              "category": "Sanitation/Waste Disposal",
+              "amount": 2000
+            },
+            {
+              "date": "2025-03-20",
+              "type": "expenditure",
+              "category": "Other Expenses",
+              "amount": 8000
+            }
+          ]
+        }
+    

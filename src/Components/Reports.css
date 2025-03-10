@@ -39,4 +39,40 @@
   .action-btn:hover {
     background-color: #2196F3;
   }
-  
+  /* Container for the filter section */
+.filter-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  background: red;
+}
+
+/* Style for the label */
+.filter-label {
+  font-weight: 500;
+  color: #4B5563; /* Tailwind's text-gray-700 */
+}
+
+/* Style for the select dropdown with more specific selector */
+#monthSelect.filter-select {
+  padding: 0.5rem;
+  border: 1px solid #D1D5DB; /* Tailwind's border-gray-300 */
+  border-radius: 0.75rem; /* Rounded corners (lg) */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Small shadow */
+  width: 12rem; /* Similar to w-48 (48 is 12rem in Tailwind) */
+  font-size: 1rem;
+  outline: none;
+}
+
+/* Style for select box when focused */
+#monthSelect.filter-select:focus {
+  border-color: #6366F1; /* Tailwind's indigo-500 */
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3); /* Focus ring */
+}
+
+/* Adding hover effect for select */
+#monthSelect.filter-select:hover {
+  border-color: #4B5563; /* Darker border on hover */
+}
+#monthSelect{background: red;}

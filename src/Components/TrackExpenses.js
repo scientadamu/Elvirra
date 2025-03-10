@@ -1,77 +1,128 @@
-// TrackExpenses.js
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Doughnut } from "react-chartjs-2";
 import "chart.js/auto";
-import "./TrackExpenses.css"; // Ensure you have a separate CSS for styling
+import "./TrackExpenses.css";
 
 const TrackExpenses = () => {
-  // Sample data for expense categories
+  const [expenses, setExpenses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch("/elviralData.json") // Ensure the correct path to JSON file
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to load data");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Fetched Data:", data); // Log to verify structure
+
+        if (data && Array.isArray(data.expenses)) {
+          const sortedExpenses = [...data.expenses].sort((a, b) => {
+            return new Date(b.date) - new Date(a.date); // Sort descending
+          });
+
+          setExpenses(sortedExpenses);
+        } else {
+          setError("No expenses data found in the response.");
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error loading JSON:", error);
+        setError("There was an issue loading the data. Please try again.");
+        setLoading(false);
+      });
+  }, []);
+
+  // Calculate total sales and purchases
+  const totalSales = expenses
+    .filter((t) => t.type === "sale")
+    .reduce((sum, t) => sum + (t.amount || 0), 0);
+  const totalPurchases = expenses
+    .filter((t) => t.type === "purchase")
+    .reduce((sum, t) => sum + (t.amount || 0), 0);
+
+  // Data for the Doughnut chart
   const expenseData = {
-    labels: ["Food", "Groceries", "Utilities", "Transport", "Entertainment", "Shopping"],
+    labels: ["Sales", "Purchases"],
     datasets: [
       {
-        label: "Expenses (₦)",
-        data: [50000, 40000, 30000, 20000, 30000, 30000], // Total: 200,000
-        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4CAF50", "#9966FF", "#FF9F40"],
+        label: "Transactions (₦)",
+        data: [totalSales, totalPurchases],
+        backgroundColor: ["#4CAF50", "#FF6384"],
       },
     ],
   };
 
-  // Expense History Table (similar to recent transactions)
-  const expenseHistory = [
-    { date: "Jan 5, 2025", item: "Supermarket Groceries", category: "Food", amount: 50000 },
-    { date: "Jan 10, 2025", item: "Electric Bill", category: "Utilities", amount: 30000 },
-    { date: "Jan 12, 2025", item: "Fuel", category: "Transport", amount: 20000 },
-    { date: "Jan 20, 2025", item: "Streaming Subscription", category: "Entertainment", amount: 20000 },
-    { date: "Jan 25, 2025", item: "Clothing", category: "Shopping", amount: 30000 },
-    { date: "Feb 3, 2025", item: "Weekend Outing", category: "Entertainment", amount: 10000 },
-    { date: "Feb 6, 2025", item: "Home Groceries", category: "Groceries", amount: 40000 },
-    { date: "Feb 8, 2025", item: "Streaming Subscription", category: "Entertainment", amount: 20000 },
-    { date: "Feb 12, 2025", item: "Transport", category: "Transport", amount: 30000 },
-    { date: "Feb 20, 2025", item: "Clothing", category: "Shopping", amount: 30000 },
-  ];
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="track-expenses">
       <h1>Track Expenses</h1>
 
-      {/* Expense Breakdown Chart */}
-      <div className="charts">
+      {/* Summary */}
+      <div className="total-summary">
+        <p>Total Sales: ₦{totalSales.toLocaleString()}</p>
+        <p>Total Purchases: ₦{totalPurchases.toLocaleString()}</p>
+      </div>
+
+      {/* Search Bar */}
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search expenses..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
+      {/* Doughnut Chart */}
+      <div className="charts" style={{ width: "50%", margin: "0 auto" }}>
         <div className="chart">
           <h3>Expense Breakdown</h3>
-          <Doughnut data={expenseData} />
+          <Doughnut data={expenseData} width={200} height={200} />
         </div>
       </div>
 
-      {/* Expense History Table */}
+      {/* Error message */}
+      {error && <div className="error-message">{error}</div>}
+
+      {/* Expense History */}
       <div className="expense-history">
-        <h3>Expense History</h3>
+        <h3>All Expenses</h3>
+
         <table>
           <thead>
             <tr>
               <th>Date</th>
               <th>Item</th>
-              <th>Category</th>
+              <th>Unit Price (₦)</th>
               <th>Amount (₦)</th>
             </tr>
           </thead>
           <tbody>
-            {expenseHistory.map((expense, index) => (
-              <tr key={index}>
-                <td>{expense.date}</td>
-                <td>{expense.item}</td>
-                <td>{expense.category}</td>
-                <td>₦{expense.amount.toLocaleString()}</td>
-              </tr>
-            ))}
+            {expenses
+              .filter((expense) =>
+                expense.item?.toLowerCase().includes(searchTerm.toLowerCase())
+              )
+              .map((expense, index) => (
+                <tr key={index} style={{ color: "black" }}>
+                  <td>{new Date(expense.date).toLocaleString()}</td>
+                  <td>{expense.item || "N/A"}</td>
+                  <td>₦{(expense.unitPrice || 0).toLocaleString()}</td>
+                  <td style={{ color: expense.type === "sale" ? "green" : "pink" }}>
+                    ₦{(expense.amount || 0).toLocaleString()}
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="quick-actions">
-        <button className="action-btn">📌 Add Expense</button>
-        <button className="action-btn">📑 View Detailed Reports</button>
       </div>
     </div>
   );
