@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./SetBudget.css";
 
 const SetBudget = () => {
@@ -6,6 +6,36 @@ const SetBudget = () => {
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState("");
   const [budgets, setBudgets] = useState([]);
+  const [elviralData, setElviralData] = useState(null);
+  const [selectedMonth, setSelectedMonth] = useState(null);
+  const [monthlyData, setMonthlyData] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [isBudgetSaved, setIsBudgetSaved] = useState(false);
+  const [savedBudgets, setSavedBudgets] = useState({}); // Stores budgets by month
+
+  // Get the next month and onward
+  const today = new Date();
+  const currentMonth = today.getMonth(); // 0-based index (Jan = 0, Feb = 1, etc.)
+  const months = [
+    "January 2025", "February 2025", "March 2025", "April 2025",
+    "May 2025", "June 2025", "July 2025", "August 2025",
+    "September 2025", "October 2025", "November 2025", "December 2025"
+  ];
+  const availableMonths = months.slice(currentMonth + 1); // Start from next month
+
+  // Fetch elviralData.json from the public folder
+  useEffect(() => {
+    fetch("/elviralData.json")
+      .then((response) => response.json())
+      .then((data) => {
+        setElviralData(data.transactions); // Extract transactions
+
+        // Get unique categories from the data
+        const uniqueCategories = [...new Set(data.transactions.map((item) => item.category))];
+        setCategories(uniqueCategories);
+      })
+      .catch((error) => console.error("Error loading data:", error));
+  }, []);
 
   const handleAddBudget = (e) => {
     e.preventDefault();
@@ -22,10 +52,67 @@ const SetBudget = () => {
     };
 
     setBudgets([...budgets, newBudget]);
-    setBudgetName("");
-    setCategory("");
-    setAmount("");
+    setCategory(""); // Reset category selection
+    setAmount(""); // Reset amount field
+    setIsBudgetSaved(true); // Enable month selection after saving
   };
+
+  const handleSaveBudget = () => {
+    if (!budgetName || budgets.length === 0) {
+      alert("Please add at least one category before saving.");
+      return;
+    }
+
+    // Save budget data to the selected month
+    setSavedBudgets((prev) => ({
+      ...prev,
+      [budgetName]: budgets, // Save under the selected month
+    }));
+
+    // Reset the form
+    setBudgetName("");
+    setBudgets([]);
+    setIsBudgetSaved(false);
+  };
+
+  // Handle Month Click (Calculate Totals)
+  const handleMonthClick = (month) => {
+    if (!elviralData || elviralData.length === 0) {
+      alert(`No data available for ${month}`);
+      return;
+    }
+
+    // Extract month in YYYY-MM format
+    const monthIndex = months.indexOf(month) + 1;
+    const monthString = `2025-${monthIndex.toString().padStart(2, "0")}`; // Format: 2025-01, 2025-02, etc.
+
+    // Filter transactions for the selected month
+    const monthTransactions = elviralData.filter(({ date }) => date.startsWith(monthString));
+
+    if (monthTransactions.length === 0) {
+      alert(`No transactions available for ${month}`);
+      return;
+    }
+
+    // Sum totalPurchases and totalExpenditures
+    const totalPurchases = monthTransactions
+      .filter(({ type }) => type === "purchase")
+      .reduce((sum, { amount }) => sum + parseFloat(amount), 0);
+
+    const totalExpenditures = monthTransactions
+      .filter(({ type }) => type === "expenditure")
+      .reduce((sum, { amount }) => sum + parseFloat(amount), 0);
+
+    setSelectedMonth(month);
+    setMonthlyData({
+      totalPurchases,
+      totalExpenditures,
+    });
+  };
+
+  // Get already selected categories
+  const selectedCategories = budgets.map((b) => b.category);
+  const allCategoriesSet = selectedCategories.length === categories.length; // Check if all categories are set
 
   return (
     <div className="set-budget">
@@ -34,22 +121,28 @@ const SetBudget = () => {
       {/* Budget Form */}
       <form onSubmit={handleAddBudget}>
         <label>Budget Name:</label>
-        <input
-          type="text"
-          value={budgetName}
-          onChange={(e) => setBudgetName(e.target.value)}
-          placeholder="Enter budget name"
-          required
-        />
+        <select 
+          value={budgetName} 
+          onChange={(e) => setBudgetName(e.target.value)} 
+          required 
+          disabled={isBudgetSaved} // Disable until budget is saved
+        >
+          <option value="">Select a month</option>
+          {availableMonths.map((month) => (
+            <option key={month} value={month}>
+              {month}
+            </option>
+          ))}
+        </select>
 
         <label>Category:</label>
         <select value={category} onChange={(e) => setCategory(e.target.value)} required>
           <option value="">Select a category</option>
-          <option value="Food">Food</option>
-          <option value="Transport">Transport</option>
-          <option value="Utilities">Utilities</option>
-          <option value="Entertainment">Entertainment</option>
-          <option value="Shopping">Shopping</option>
+          {categories.map((cat) => (
+            <option key={cat} value={cat} disabled={selectedCategories.includes(cat)}>
+              {cat} {selectedCategories.includes(cat) ? "(Already Set)" : ""}
+            </option>
+          ))}
         </select>
 
         <label>Amount (₦):</label>
@@ -61,31 +154,46 @@ const SetBudget = () => {
           required
         />
 
-        <button type="submit">Add Budget</button>
+        {!allCategoriesSet && <button type="submit">Add Budget</button>}
       </form>
 
-      {/* Budget List */}
+      {/* Show Save Button After Last Category is Set */}
+      {allCategoriesSet && (
+        <button className="save-budget" onClick={handleSaveBudget}>
+          Save Budget
+        </button>
+      )}
+
+      {/* Display already set categories */}
       {budgets.length > 0 && (
-        <div className="budget-list">
-          <h3>Budget Summary</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Amount (₦)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {budgets.map((budget) => (
-                <tr key={budget.id}>
-                  <td>{budget.name}</td>
-                  <td>{budget.category}</td>
-                  <td>₦{budget.amount.toLocaleString()}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="set-categories">
+          <h3>Set Categories</h3>
+          <ul>
+            {budgets.map((b) => (
+              <li key={b.id}>
+                <strong>{b.category}:</strong> ₦{b.amount.toLocaleString()}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Budget Summary (Clickable Buttons) */}
+      <h3>Budget Summary</h3>
+      <div className="budget-list">
+        {months.slice(0, 4).map((month) => (
+          <button key={month} className="budget-item" onClick={() => handleMonthClick(month)}>
+            {month}
+          </button>
+        ))}
+      </div>
+
+      {/* Budget Details (Shown After Clicking a Month) */}
+      {selectedMonth && monthlyData && (
+        <div className="budget-details">
+          <h3>{selectedMonth} Budget Details</h3>
+          <p><strong>Total Purchases:</strong> ₦{monthlyData.totalPurchases.toLocaleString()}</p>
+          <p><strong>Total Expenditures:</strong> ₦{monthlyData.totalExpenditures.toLocaleString()}</p>
         </div>
       )}
     </div>

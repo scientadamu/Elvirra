@@ -4,13 +4,15 @@ import "chart.js/auto";
 import "./TrackExpenses.css";
 
 const TrackExpenses = () => {
-  const [expenses, setExpenses] = useState([]);
+  const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("all");
+  const [selectedMonth, setSelectedMonth] = useState(""); // New month filter state
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("/elviralData.json") // Ensure the correct path to JSON file
+    fetch("/elviralData.json")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to load data");
@@ -18,111 +20,147 @@ const TrackExpenses = () => {
         return response.json();
       })
       .then((data) => {
-        console.log("Fetched Data:", data); // Log to verify structure
-
-        if (data && Array.isArray(data.expenses)) {
-          const sortedExpenses = [...data.expenses].sort((a, b) => {
-            return new Date(b.date) - new Date(a.date); // Sort descending
-          });
-
-          setExpenses(sortedExpenses);
+        if (data && Array.isArray(data.transactions)) {
+          const sortedTransactions = data.transactions.sort(
+            (a, b) => new Date(b.date) - new Date(a.date)
+          );
+          setTransactions(sortedTransactions);
         } else {
-          setError("No expenses data found in the response.");
+          setError("No transactions data found.");
         }
         setLoading(false);
       })
       .catch((error) => {
         console.error("Error loading JSON:", error);
-        setError("There was an issue loading the data. Please try again.");
+        setError("There was an issue loading the data.");
         setLoading(false);
       });
   }, []);
 
-  // Calculate total sales and purchases
-  const totalSales = expenses
+  // Get list of months from transactions for dropdown
+  const availableMonths = [
+    ...new Set(
+      transactions.map((t) => new Date(t.date).toLocaleString("default", { month: "long", year: "numeric" }))
+    ),
+  ];
+
+  const filteredTransactions = transactions.filter((t) => {
+    const matchesType = filterType === "all" || t.type === filterType;
+    const matchesSearch = t.item?.toLowerCase().includes(searchTerm.toLowerCase());
+    const transactionMonth = new Date(t.date).toLocaleString("default", { month: "long", year: "numeric" });
+    const matchesMonth = selectedMonth === "" || transactionMonth === selectedMonth;
+    return matchesType && matchesSearch && matchesMonth;
+  });
+
+  const totalSales = filteredTransactions
     .filter((t) => t.type === "sale")
     .reduce((sum, t) => sum + (t.amount || 0), 0);
-  const totalPurchases = expenses
+  const totalPurchases = filteredTransactions
     .filter((t) => t.type === "purchase")
     .reduce((sum, t) => sum + (t.amount || 0), 0);
+  const totalExpenditures = filteredTransactions
+    .filter((t) => t.type === "expenditure")
+    .reduce((sum, t) => sum + (t.amount || 0), 0);
 
-  // Data for the Doughnut chart
   const expenseData = {
-    labels: ["Sales", "Purchases"],
+    labels: ["Sales", "Purchases", "Expenditures"],
     datasets: [
       {
         label: "Transactions (₦)",
-        data: [totalSales, totalPurchases],
-        backgroundColor: ["#4CAF50", "#FF6384"],
+        data: [totalSales, totalPurchases, totalExpenditures],
+        backgroundColor: ["#4CAF50", "#FF6384", "#FFA500"],
       },
     ],
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="loading">Loading...</div>;
   }
 
   return (
     <div className="track-expenses">
       <h1>Track Expenses</h1>
 
-      {/* Summary */}
-      <div className="total-summary">
-        <p>Total Sales: ₦{totalSales.toLocaleString()}</p>
-        <p>Total Purchases: ₦{totalPurchases.toLocaleString()}</p>
+      <div className="summary">
+        <p><strong>Total Sales:</strong> ₦{totalSales.toLocaleString()}</p>
+        <p><strong>Total Purchases:</strong> ₦{totalPurchases.toLocaleString()}</p>
+        <p><strong>Total Expenditures:</strong> ₦{totalExpenditures.toLocaleString()}</p>
       </div>
 
-      {/* Search Bar */}
-      <div className="search-bar">
+      <div className="filters">
         <input
           type="text"
-          placeholder="Search expenses..."
+          placeholder="Search by item..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
+
+        <select value={filterType} onChange={(e) => setFilterType(e.target.value)}>
+          <option value="all">All Transactions</option>
+          <option value="sale">Sales</option>
+          <option value="purchase">Purchases</option>
+          <option value="expenditure">Expenditures</option>
+        </select>
+
+        <select value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)}>
+          <option value="">All Months</option>
+          {availableMonths.map((month, index) => (
+            <option key={index} value={month}>
+              {month}
+            </option>
+          ))}
+        </select>
       </div>
 
-      {/* Doughnut Chart */}
-      <div className="charts" style={{ width: "50%", margin: "0 auto" }}>
-        <div className="chart">
-          <h3>Expense Breakdown</h3>
-          <Doughnut data={expenseData} width={200} height={200} />
+      <div className="chart-wrapper">
+        <h3>Expense Breakdown</h3>
+        <div className="chart-container">
+          <Doughnut data={expenseData} options={{ maintainAspectRatio: false, responsive: true }} />
         </div>
       </div>
 
-      {/* Error message */}
-      {error && <div className="error-message">{error}</div>}
+      {error && <div className="error">{error}</div>}
 
-      {/* Expense History */}
-      <div className="expense-history">
-        <h3>All Expenses</h3>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Item</th>
-              <th>Unit Price (₦)</th>
-              <th>Amount (₦)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {expenses
-              .filter((expense) =>
-                expense.item?.toLowerCase().includes(searchTerm.toLowerCase())
-              )
-              .map((expense, index) => (
-                <tr key={index} style={{ color: "black" }}>
-                  <td>{new Date(expense.date).toLocaleString()}</td>
-                  <td>{expense.item || "N/A"}</td>
-                  <td>₦{(expense.unitPrice || 0).toLocaleString()}</td>
-                  <td style={{ color: expense.type === "sale" ? "green" : "pink" }}>
-                    ₦{(expense.amount || 0).toLocaleString()}
+      <div className="transaction-history">
+        <h3>Transaction History</h3>
+        {filteredTransactions.length === 0 ? (
+          <p>No transactions found.</p>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Item</th>
+                <th>Type</th>
+                <th>Unit Price (₦)</th>
+                <th>Amount (₦)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredTransactions.map((transaction, index) => (
+                <tr key={index}>
+                  <td>{new Date(transaction.date).toLocaleDateString()}</td>
+                  <td>{transaction.item || "N/A"}</td>
+                  <td
+                    style={{
+                      fontWeight: "bold",
+                      color:
+                        transaction.type === "sale"
+                          ? "green"
+                          : transaction.type === "purchase"
+                          ? "red"
+                          : "orange",
+                    }}
+                  >
+                    {transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}
                   </td>
+                  <td>₦{(transaction.unitPrice || 0).toLocaleString()}</td>
+                  <td>₦{(transaction.amount || 0).toLocaleString()}</td>
                 </tr>
               ))}
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );
