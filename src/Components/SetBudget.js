@@ -11,7 +11,6 @@ const SetBudget = () => {
   const [monthlyData, setMonthlyData] = useState(null);
   const [categories, setCategories] = useState([]);
   const [isBudgetSaved, setIsBudgetSaved] = useState(false);
-  const [savedBudgets, setSavedBudgets] = useState({}); // Stores budgets by month
 
   // Get the next month and onward
   const today = new Date();
@@ -57,24 +56,6 @@ const SetBudget = () => {
     setIsBudgetSaved(true); // Enable month selection after saving
   };
 
-  const handleSaveBudget = () => {
-    if (!budgetName || budgets.length === 0) {
-      alert("Please add at least one category before saving.");
-      return;
-    }
-
-    // Save budget data to the selected month
-    setSavedBudgets((prev) => ({
-      ...prev,
-      [budgetName]: budgets, // Save under the selected month
-    }));
-
-    // Reset the form
-    setBudgetName("");
-    setBudgets([]);
-    setIsBudgetSaved(false);
-  };
-
   // Handle Month Click (Calculate Totals)
   const handleMonthClick = (month) => {
     if (!elviralData || elviralData.length === 0) {
@@ -112,7 +93,6 @@ const SetBudget = () => {
 
   // Get already selected categories
   const selectedCategories = budgets.map((b) => b.category);
-  const allCategoriesSet = selectedCategories.length === categories.length; // Check if all categories are set
 
   return (
     <div className="set-budget">
@@ -154,15 +134,8 @@ const SetBudget = () => {
           required
         />
 
-        {!allCategoriesSet && <button type="submit">Add Budget</button>}
+        <button type="submit">Add Budget</button>
       </form>
-
-      {/* Show Save Button After Last Category is Set */}
-      {allCategoriesSet && (
-        <button className="save-budget" onClick={handleSaveBudget}>
-          Save Budget
-        </button>
-      )}
 
       {/* Display already set categories */}
       {budgets.length > 0 && (
